@@ -13,9 +13,9 @@ Weekly data science workshops for SIG AIDA at UIUC.
 | 7  | 8-Mar  | Visualizations (cont.)                                   |
 | 8  | 15-Mar | Data Collection using REST APIs and Web Scraping         |
 | 9  | 22-Mar | Spring Break (no meeting)                                |
-| 10 | 29-Mar | Bonus Topic- NLP?                                        |
-| 11 | 5-Apr  | Data Cleansing                                           |
-| 12 | 12-Apr | Bringing the Project Together                            |
-| 13 | 19-Apr | Introduction to Web Development                          |
-| 14 | 26-Apr | Introduction to Web Deployment                           |
-| 15 | 3-May  | Bonus Topic- SQL?                                        |
+| 10 | 29-Mar | Data Cleansing                                           |
+| 11 | 5-Apr  | Bringing the Project Together                            |
+| 12 | 12-Apr | Introduction to Web Development                          |
+| 13 | 19-Apr | Introduction to Web Deployment                           |
+| 14 | 26-Apr | Bonus Topic- Databases: SQL                              |
+| 15 | 3-May  | Bonus Topic- NLP                                         |
