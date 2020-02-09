@@ -6,7 +6,7 @@ Weekly data science workshops for SIG AIDA at UIUC.
 |----|--------|----------------------------------------------------------|
 | 1  | 26-Jan | Introductory Meeting / Python Basics I                   |
 | 2  | 2-Feb  | Python Basics II                                         |
-| 3  | 9-Feb  | Intro to Data Analysis                                   |
+| 3  | 9-Feb  | Intro to Version Control with Git                        |
 | 4  | 16-Feb | Data Cleansing using Pandas                              |
 | 5  | 23-Feb | Data Visualization using plot.ly                         |
 | 6  | 1-Mar  | HackIllinois (no meeting)                                |
