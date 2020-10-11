@@ -10,13 +10,13 @@ Weekly data science workshops for SIG AIDA at UIUC.
 | 4  | 19-Sep | Pandas, Data cleaning |
 | 5  | 26-Sep | Intro to plot.ly |
 | 6  | 03-Oct | More visualizations |
-| 7  | 10-Oct | REST APIs, Web scraping |
-| 8  | 17-Oct | Web Development using Django |
+| 7  | 10-Oct | HTTP, Web scraping |
+| 8  | 17-Oct | Web Development with Dash |
 | 9  | 24-Oct | NLP |
 | 10 | 31-Oct | Other databases |
 | 11 | 07-Nov | Big data |
-| 12 | 14-Nov | TBD |
+| 12 | 14-Nov | Putting everything together |
 | 13 | 21-Nov | Thanksgiving Break |
 | 14 | 28-Nov | Thanksgiving Break |
 | 15 | 05-Dec | TBD |
-| 16 | 12-Dec | Finals! Good Luck!                                       |
+| 16 | 12-Dec | Finals! Good Luck! |
