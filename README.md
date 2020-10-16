@@ -12,8 +12,8 @@ Weekly data science workshops for SIG AIDA at UIUC.
 | 6  | 03-Oct | More visualizations |
 | 7  | 10-Oct | HTTP, Web scraping |
 | 8  | 17-Oct | Web Development with Dash |
-| 9  | 24-Oct | NLP |
-| 10 | 31-Oct | Other databases |
+| 9  | 24-Oct | NLP Part 1 |
+| 10 | 31-Oct | NLP Part 2 |
 | 11 | 07-Nov | Big data |
 | 12 | 14-Nov | Putting everything together |
 | 13 | 21-Nov | Thanksgiving Break |
