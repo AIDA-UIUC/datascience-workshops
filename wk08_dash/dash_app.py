@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
+import flask
 
 import json
 import pandas as pd
@@ -76,11 +77,21 @@ def get_top_counties_div(n=50):
 
 
 # ----------------------- Dash app ------------------------------------
+server = flask.Flask(__name__)
+
+@server.route('/')
+def index():
+    return flask.render_template('index.html')
+
+
 app = dash.Dash(
     __name__,
-    requests_pathname_prefix='/dash/',
+    server=server,
+    routes_pathname_prefix='/dash/',
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
+
+#app.layout = html.Div("Hello Shaw")
 
 app.layout = dbc.Container([
     dbc.Row([
@@ -176,3 +187,7 @@ def update_line_fig(county, state):
     line_fig_day.add_trace(go.Scatter(x = data.index, y = data.values[1:] - data.values[:-1]))
     line_fig_day.update_layout(margin=dict(l=20, r=20, t=20, b=20))
     return line_fig, line_fig_day
+
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
