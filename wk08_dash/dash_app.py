@@ -66,7 +66,12 @@ def get_state_selections():
         for state in df["Province_State"].unique()
     ]
 
-def get_top_counties_div(n=50):
+def get_state_from_county(county):
+    if county is None:
+        return None
+    return df[df["Admin2"] == county].loc[:, "Province_State"].unique()
+
+def get_top_counties_cards(n=50):
     sorted_by_last_day = df.sort_values(last_column, ascending = False).head(n)
     return [
         dbc.Card([
@@ -124,40 +129,36 @@ app.layout = dbc.Container(
         dbc.Row([
             # LEFT COLUMN
             dbc.Col([
-                dbc.Card(get_top_counties_div(),
-                    style={"overflow": "scroll"}),
+                html.Div(get_top_counties_cards(),
+                    style={"overflowY": "scroll"}),
                 dbc.Card(
                     f"Last updated: {last_updated}",
                     body=True
                 ),
-            ], width=3, style={"height": "100%"},),
+            ], width=3, style={"height": "95vh"},),
 
             # CENTER COLUMN
             dbc.Col([
                 dbc.Card([
                     dcc.Graph(id="map_fig", figure=map_fig)
-                ], style={"height": "80%"}),
+                ], style={"max-height": "80%"}),
                 dbc.Card(
                     "This is where the data came from.",
                     body=True
                 )
-            ], width=6, style={"height": "100%"},),
+            ], width=6, style={"height": "95vh"},),
 
             # RIGHT COLUMN
             dbc.Col([
                 dbc.Card([
                     dcc.Graph(id="line_fig_day", figure=line_fig_day)
-                ], style={"height": "50%"}),
+                ], style={"max-height": "50%"}),
                 dbc.Card([
                     dcc.Graph(id="line_fig", figure=line_fig)
-                ], style={"height": "50%"})
-            ], width=3, style={"height": "100%"},),
+                ], style={"max-height": "50%"})
+            ], width=3, style={"height": "95vh"},),
 
         ], className="h-75"),  # set height of row
-
-        dbc.Row([
-            dbc.Col([dbc.Card("Hello", body=True)])
-        ])
     ],
     style={"height": "100vh"},
 )
@@ -169,7 +170,19 @@ app.layout = dbc.Container(
     [Input(component_id="state-selector", component_property="value")]
 )
 def update_county_selector(state):
+    if state is not None and type(state) == list:
+        state = state[0]
+    print(f"update_county_selector({state})")
     return get_county_selections(state)
+
+
+@app.callback(
+    Output(component_id="state-selector", component_property="value"),
+    [Input(component_id="county-selector", component_property="value")]
+)
+def update_state_selector(county):
+    print(f"update_state_selector({county})")
+    return get_state_from_county(county)
 
 
 @app.callback(
