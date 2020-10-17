@@ -102,12 +102,14 @@ app.layout = dbc.Container(
             dbc.Col([html.B("States/Territories")], width = "auto"),
             dbc.Col([dcc.Dropdown(id="state-selector",
                         placeholder="Select State",
-                        options=get_state_selections())
+                        options=get_state_selections()
+                        label="")
             ], width = "auto"),
             dbc.Col([html.B("County")], width = "auto"),
             dbc.Col([dcc.Dropdown(id="county-selector",
                         placeholder="Select County",
-                        options=get_county_selections())
+                        options=get_county_selections(),
+                        label="")
             ], width = "auto"),
         ]),
         dbc.Row([
@@ -145,7 +147,7 @@ app.layout = dbc.Container(
         ], className="h-75"),  # set height of row
 
         dbc.Row([
-
+            dbc.Col([dbc.Card("Hello", body=True)])
         ])
     ],
     style={"height": "100vh"},
