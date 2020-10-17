@@ -3,7 +3,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
-import flask
 
 import json
 import pandas as pd
@@ -84,29 +83,10 @@ def get_top_counties_cards(n=50):
     ]
 
 
-# ----------------------- Dash app ------------------------------------
-server = flask.Flask(__name__, template_folder = "templates")
-
-@server.route('/')
-def index():
-    return flask.render_template('index.html')
-
-
-#returning hello world without templates
-@server.route('/hello')
-def helloWorld():
-    return "Hello, World!"  # return a string
-
-
-@server.route('/about/')
-def about():
-    return flask.render_template('about.html')
-
-
+# ----------------------- Dash app + HTML components ------------------------------------
 app = dash.Dash(
     __name__,
-    server=server,
-    routes_pathname_prefix='/dash/',
+    requests_pathname_prefix='/dash/',
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
@@ -130,35 +110,35 @@ app.layout = dbc.Container(
             # LEFT COLUMN
             dbc.Col([
                 html.Div(get_top_counties_cards(),
-                    style={"overflowY": "scroll"}),
+                    style={"overflow": "scroll", "height": "90%"}),
                 dbc.Card(
                     f"Last updated: {last_updated}",
                     body=True
                 ),
-            ], width=3, style={"height": "95vh"},),
+            ], width=3, style={"height": "85vh"},),
 
             # CENTER COLUMN
             dbc.Col([
                 dbc.Card([
                     dcc.Graph(id="map_fig", figure=map_fig)
-                ], style={"max-height": "80%"}),
+                ], style={"height": "80%"}),
                 dbc.Card(
                     "This is where the data came from.",
                     body=True
                 )
-            ], width=6, style={"height": "95vh"},),
+            ], width=6, style={"height": "85vh"},),
 
             # RIGHT COLUMN
             dbc.Col([
                 dbc.Card([
                     dcc.Graph(id="line_fig_day", figure=line_fig_day)
-                ], style={"max-height": "50%"}),
+                ], style={"height": "50%"}),
                 dbc.Card([
                     dcc.Graph(id="line_fig", figure=line_fig)
-                ], style={"max-height": "50%"})
-            ], width=3, style={"height": "95vh"},),
+                ], style={"height": "50%"})
+            ], width=3, style={"height": "85vh"},),
 
-        ], className="h-75"),  # set height of row
+        ]),  # set height of row
     ],
     style={"height": "100vh"},
 )
@@ -191,7 +171,7 @@ def update_state_selector(county):
      Input(component_id="state-selector", component_property="value")]
 )
 def update_map_fig(county, state):
-    map_fig = go.Figure(go.Choroplethmapbox(geojson=counties, locations=df["FIPS"], z=df["10/2/20"],
+    map_fig = go.Figure(go.Choroplethmapbox(geojson=counties, locations=df["FIPS"], z=df[last_column],
                                             colorscale="Viridis",
                                             marker_opacity=0.5, marker_line_width=0,
                                             hovertext=hovertext))
@@ -229,7 +209,3 @@ def update_line_fig(county, state):
     line_fig_day.add_trace(go.Scatter(x = data.index, y = data.values[1:] - data.values[:-1]))
     line_fig_day.update_layout(margin=dict(l=20, r=20, t=20, b=20))
     return line_fig, line_fig_day
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
