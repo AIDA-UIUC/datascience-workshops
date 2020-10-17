@@ -87,17 +87,6 @@ def index():
     return flask.render_template('index.html')
 
 
-#returning hello world without templates
-@server.route('/hello')
-def helloWorld():
-    return "Hello, World!"  # return a string
-
-
-@server.route('/about/')
-def about():
-    return flask.render_template('about.html')
-
-
 app = dash.Dash(
     __name__,
     server=server,
@@ -110,6 +99,9 @@ app.layout = dbc.Container(
         dbc.Row([
             dbc.Col([html.H4("COVID-19 United States Cases by County")], width = "auto"),
             dbc.Col([html.H6("Johns Hopkins University")], width = "auto"),
+        ]),
+
+        dbc.Row([
             dbc.Col([html.B("States/Territories")], width = "auto"),
             dbc.Col([dcc.Dropdown(id="state-selector",
                         placeholder="Select State",
@@ -121,16 +113,17 @@ app.layout = dbc.Container(
                         options=get_county_selections())
             ], width = "auto"),
         ]),
+        
         dbc.Row([
             # LEFT COLUMN
             dbc.Col([
                 dbc.Card(get_top_counties_div(),
-                    style={"overflow": "scroll"}),
+                    style={"overflow": "scroll", "height": "90%"}),
                 dbc.Card(
                     f"Last updated: {last_updated}",
                     body=True
                 ),
-            ], width=3, style={"height": "100%"},),
+            ], width=3, style={"height": "85vh"},),
 
             # CENTER COLUMN
             dbc.Col([
@@ -141,7 +134,7 @@ app.layout = dbc.Container(
                     "This is where the data came from.",
                     body=True
                 )
-            ], width=6, style={"height": "100%"},),
+            ], width=6, style={"height": "85vh"},),
 
             # RIGHT COLUMN
             dbc.Col([
@@ -151,13 +144,9 @@ app.layout = dbc.Container(
                 dbc.Card([
                     dcc.Graph(id="line_fig", figure=line_fig)
                 ], style={"height": "50%"})
-            ], width=3, style={"height": "100%"},),
+            ], width=3, style={"height": "85vh"},),
 
         ], className="h-75"),  # set height of row
-
-        dbc.Row([
-            dbc.Col([dbc.Card("Hello", body=True)])
-        ])
     ],
     style={"height": "100vh"},
 )
