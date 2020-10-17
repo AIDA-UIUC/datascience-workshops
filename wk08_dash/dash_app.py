@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
+import flask
 
 import json
 import pandas as pd
@@ -65,12 +66,7 @@ def get_state_selections():
         for state in df["Province_State"].unique()
     ]
 
-def get_state_from_county(county):
-    if county is None:
-        return None
-    return df[df["Admin2"] == county].loc[:, "Province_State"].unique()
-
-def get_top_counties_cards(n=50):
+def get_top_counties_div(n=50):
     sorted_by_last_day = df.sort_values(last_column, ascending = False).head(n)
     return [
         dbc.Card([
@@ -83,10 +79,29 @@ def get_top_counties_cards(n=50):
     ]
 
 
-# ----------------------- Dash app + HTML components ------------------------------------
+# ----------------------- Dash app ------------------------------------
+server = flask.Flask(__name__, template_folder = "templates")
+
+@server.route('/')
+def index():
+    return flask.render_template('index.html')
+
+
+#returning hello world without templates
+@server.route('/hello')
+def helloWorld():
+    return "Hello, World!"  # return a string
+
+
+@server.route('/about/')
+def about():
+    return flask.render_template('about.html')
+
+
 app = dash.Dash(
     __name__,
-    requests_pathname_prefix='/dash/',
+    server=server,
+    routes_pathname_prefix='/dash/',
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
@@ -109,13 +124,13 @@ app.layout = dbc.Container(
         dbc.Row([
             # LEFT COLUMN
             dbc.Col([
-                html.Div(get_top_counties_cards(),
-                    style={"overflow": "scroll", "height": "90%"}),
+                dbc.Card(get_top_counties_div(),
+                    style={"overflow": "scroll"}),
                 dbc.Card(
                     f"Last updated: {last_updated}",
                     body=True
                 ),
-            ], width=3, style={"height": "85vh"},),
+            ], width=3, style={"height": "100%"},),
 
             # CENTER COLUMN
             dbc.Col([
@@ -126,7 +141,7 @@ app.layout = dbc.Container(
                     "This is where the data came from.",
                     body=True
                 )
-            ], width=6, style={"height": "85vh"},),
+            ], width=6, style={"height": "100%"},),
 
             # RIGHT COLUMN
             dbc.Col([
@@ -136,9 +151,13 @@ app.layout = dbc.Container(
                 dbc.Card([
                     dcc.Graph(id="line_fig", figure=line_fig)
                 ], style={"height": "50%"})
-            ], width=3, style={"height": "85vh"},),
+            ], width=3, style={"height": "100%"},),
 
-        ]),  # set height of row
+        ], className="h-75"),  # set height of row
+
+        dbc.Row([
+            dbc.Col([dbc.Card("Hello", body=True)])
+        ])
     ],
     style={"height": "100vh"},
 )
@@ -150,19 +169,7 @@ app.layout = dbc.Container(
     [Input(component_id="state-selector", component_property="value")]
 )
 def update_county_selector(state):
-    if state is not None and type(state) == list:
-        state = state[0]
-    print(f"update_county_selector({state})")
     return get_county_selections(state)
-
-
-@app.callback(
-    Output(component_id="state-selector", component_property="value"),
-    [Input(component_id="county-selector", component_property="value")]
-)
-def update_state_selector(county):
-    print(f"update_state_selector({county})")
-    return get_state_from_county(county)
 
 
 @app.callback(
@@ -171,7 +178,7 @@ def update_state_selector(county):
      Input(component_id="state-selector", component_property="value")]
 )
 def update_map_fig(county, state):
-    map_fig = go.Figure(go.Choroplethmapbox(geojson=counties, locations=df["FIPS"], z=df[last_column],
+    map_fig = go.Figure(go.Choroplethmapbox(geojson=counties, locations=df["FIPS"], z=df["10/2/20"],
                                             colorscale="Viridis",
                                             marker_opacity=0.5, marker_line_width=0,
                                             hovertext=hovertext))
@@ -209,3 +216,7 @@ def update_line_fig(county, state):
     line_fig_day.add_trace(go.Scatter(x = data.index, y = data.values[1:] - data.values[:-1]))
     line_fig_day.update_layout(margin=dict(l=20, r=20, t=20, b=20))
     return line_fig, line_fig_day
+
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
