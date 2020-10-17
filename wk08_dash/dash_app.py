@@ -87,6 +87,17 @@ def index():
     return flask.render_template('index.html')
 
 
+#returning hello world without templates
+@server.route('/hello')
+def helloWorld():
+    return "Hello, World!"  # return a string
+
+
+@server.route('/about/')
+def about():
+    return flask.render_template('about.html')
+
+
 app = dash.Dash(
     __name__,
     server=server,
@@ -102,14 +113,12 @@ app.layout = dbc.Container(
             dbc.Col([html.B("States/Territories")], width = "auto"),
             dbc.Col([dcc.Dropdown(id="state-selector",
                         placeholder="Select State",
-                        options=get_state_selections()
-                        label="")
+                        options=get_state_selections())
             ], width = "auto"),
             dbc.Col([html.B("County")], width = "auto"),
             dbc.Col([dcc.Dropdown(id="county-selector",
                         placeholder="Select County",
-                        options=get_county_selections(),
-                        label="")
+                        options=get_county_selections())
             ], width = "auto"),
         ]),
         dbc.Row([
