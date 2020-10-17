@@ -70,14 +70,17 @@ def get_top_counties_div(n=50):
     sorted_by_last_day = df.sort_values(last_column, ascending = False).head(n)
     return [
         dbc.Card([
-            dbc.CardTitle(f"{row['Admin2']},{row['Province_State']}")
+            dbc.CardBody([
+                html.H6(f"{row['Admin2']}, {row['Province_State']}"),
+                html.P(f"{row[last_column]:,} total cases"),
+            ])
         ])
         for index, row in sorted_by_last_day.iterrows()
     ]
 
 
 # ----------------------- Dash app ------------------------------------
-server = flask.Flask(__name__)
+server = flask.Flask(__name__, template_folder = "templates")
 
 @server.route('/')
 def index():
@@ -91,50 +94,65 @@ app = dash.Dash(
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
-#app.layout = html.Div("Hello Shaw")
+app.layout = dbc.Container(
+    [
+        dbc.Row([
+            dbc.Col([html.H4("COVID-19 United States Cases by County")], width = "auto"),
+            dbc.Col([html.H6("Johns Hopkins University")], width = "auto"),
+            dbc.Col([html.B("States/Territories")], width = "auto"),
+            dbc.Col([dcc.Dropdown(id="state-selector",
+                        placeholder="Select State",
+                        options=get_state_selections())
+            ], width = "auto"),
+            dbc.Col([html.B("County")], width = "auto"),
+            dbc.Col([dcc.Dropdown(id="county-selector",
+                        placeholder="Select County",
+                        options=get_county_selections())
+            ], width = "auto"),
+        ]),
+        dbc.Row([
+            # LEFT COLUMN
+            dbc.Col([
+                dbc.Card(get_top_counties_div(),
+                    style={"overflow": "scroll"}),
+                dbc.Card(
+                    f"Last updated: {last_updated}",
+                    body=True
+                ),
+            ], width=3, style={"height": "100%"},),
 
-app.layout = dbc.Container([
-    dbc.Row([
-        dbc.Col([html.H4("COVID-19 United States Cases by County")], width = "auto"),
-        dbc.Col([html.H6("Johns Hopkins University")], width = "auto"),
-        dbc.Col([html.B("States/Territories")], width = "auto"),
-        dbc.Col([dcc.Dropdown(id="state-selector",
-                    placeholder="Select State",
-                    options=get_state_selections())
-        ], width = "auto"),
-        dbc.Col([html.B("County")], width = "auto"),
-        dbc.Col([dcc.Dropdown(id="county-selector",
-                    placeholder="Select County",
-                    options=get_county_selections())
-        ], width = "auto"),
-    ]),
-    dbc.Row([
-        dbc.Col([
-            dbc.Card(get_top_counties_div,
-                style={"maxHeight": "400px", "overflow": "scroll"}),
-            dbc.Card([html.H6(f"Last updated: {last_updated}")])
-        ], width = 3),
-        dbc.Col([
-            dbc.Card([
-                dcc.Graph(id="map_fig", figure=map_fig)
-            ]),
-            dbc.Card([
-                html.H6("This is where the data came from.")
-            ])
-        ], width = 6),
-        dbc.Col([
-            dbc.Card([
-                dcc.Graph(id="line_fig_day", figure=line_fig_day)
-            ]),
-            dbc.Card([
-                dcc.Graph(id="line_fig", figure=line_fig)
-            ])
-        ], width = 3),
+            # CENTER COLUMN
+            dbc.Col([
+                dbc.Card([
+                    dcc.Graph(id="map_fig", figure=map_fig)
+                ], style={"height": "80%"}),
+                dbc.Card(
+                    "This is where the data came from.",
+                    body=True
+                )
+            ], width=6, style={"height": "100%"},),
 
-    ])
-])
+            # RIGHT COLUMN
+            dbc.Col([
+                dbc.Card([
+                    dcc.Graph(id="line_fig_day", figure=line_fig_day)
+                ], style={"height": "50%"}),
+                dbc.Card([
+                    dcc.Graph(id="line_fig", figure=line_fig)
+                ], style={"height": "50%"})
+            ], width=3, style={"height": "100%"},),
+
+        ], className="h-75"),  # set height of row
+
+        dbc.Row([
+
+        ])
+    ],
+    style={"height": "100vh"},
+)
 
 
+# ------------------------------ Callback functions --------------------------------
 @app.callback(
     Output(component_id="county-selector", component_property="options"),
     [Input(component_id="state-selector", component_property="value")]
