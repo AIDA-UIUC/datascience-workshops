@@ -20,3 +20,6 @@ Weekly data science workshops for SIG AIDA at UIUC.
 | 14 | 28-Nov | Thanksgiving Break | --- |
 | 15 | 05-Dec | TBD | TBD |
 | 16 | 12-Dec | Finals! Good Luck! | --- |
+
+## Join Us over at the ACM Slack!
+Don't miss out on announcements/events by joining us at https://acm-uiuc.slack.com at `#sigaida`
