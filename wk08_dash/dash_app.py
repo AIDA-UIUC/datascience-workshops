@@ -1,3 +1,4 @@
+from waitress import serve
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -207,5 +208,6 @@ def update_line_fig(county, state):
     return line_fig, line_fig_day
 
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+#if __name__ == '__main__':
+#    app.run_server(debug=True)
+serve(app, host='0.0.0.0', port=8080)
